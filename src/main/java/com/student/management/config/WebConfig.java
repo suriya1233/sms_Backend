@@ -1,44 +1,20 @@
 package com.student.management.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.NonNull;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import java.util.List;
 
+/**
+ * WebConfig - Additional Web MVC configurations
+ * 
+ * NOTE: CORS is handled by SecurityConfig.java which uses allowedOriginPatterns
+ * to support wildcards like *.vercel.app, *.railway.app, etc.
+ * Do NOT add CORS mappings here to avoid conflicts.
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
-    private final CorsProperties corsProperties;
-
-    public WebConfig(CorsProperties corsProperties) {
-        this.corsProperties = corsProperties;
-    }
-
-    @Override
-    public void addCorsMappings(@NonNull CorsRegistry registry) {
-        var mapping = registry.addMapping("/**");
-
-        // Use dynamic origins from properties, fallback to all if empty
-        List<String> allowedOrigins = corsProperties.getAllowedOrigins();
-
-        // IMPORTANT: When allowCredentials is true, cannot use "*" with allowedOrigins
-        // Must use allowedOriginPatterns instead
-        if (allowedOrigins == null || allowedOrigins.isEmpty()) {
-            // No origins specified, use pattern to allow all
-            mapping.allowedOriginPatterns("*");
-        } else if (allowedOrigins.size() == 1 && "*".equals(allowedOrigins.get(0))) {
-            // Wildcard specified, use pattern (required when credentials are enabled)
-            mapping.allowedOriginPatterns("*");
-        } else {
-            // Specific origins specified, use allowedOrigins
-            mapping.allowedOrigins(allowedOrigins.toArray(new String[0]));
-        }
-
-        mapping.allowedMethods(corsProperties.getAllowedMethods().toArray(new String[0]))
-                .allowedHeaders(corsProperties.getAllowedHeaders().toArray(new String[0]))
-                .allowCredentials(corsProperties.isAllowCredentials())
-                .exposedHeaders(corsProperties.getExposedHeaders().toArray(new String[0]))
-                .maxAge(corsProperties.getMaxAge());
-    }
+    // CORS is configured in SecurityConfig.java with proper patterns for:
+    // - http://localhost:*
+    // - https://*.vercel.app
+    // - https://*.railway.app
+    // - https://*.netlify.app
 }
