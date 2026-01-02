@@ -31,27 +31,33 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
-        System.out.println("Login Params: " + request.getUsername() + ", " + request.getPassword());
-        UserAccount user = userRepo.findByUsername(request.getUsername())
-                .orElse(null);
-        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(401).body("Invalid credentials");
-        }
-
-        String token = jwtService.generateToken(user);
-
-        // Get the student name if this is a student account
-        String name = user.getUsername();
-        if (user.getStudentId() != null) {
-            Student student = studentRepo.findByStudentId(user.getStudentId()).orElse(null);
-            if (student != null) {
-                name = student.getName();
+        try {
+            System.out.println("Login Params: " + request.getUsername() + ", " + request.getPassword());
+            UserAccount user = userRepo.findByUsername(request.getUsername())
+                    .orElse(null);
+            if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+                return ResponseEntity.status(401).body("Invalid credentials");
             }
-        } else if (user.getRole().name().equals("ADMIN")) {
-            name = "Administrator";
-        }
 
-        return ResponseEntity
-                .ok(new LoginResponse(token, user.getRole().name(), user.getUsername(), user.getStudentId(), name));
+            String token = jwtService.generateToken(user);
+
+            // Get the student name if this is a student account
+            String name = user.getUsername();
+            if (user.getStudentId() != null) {
+                Student student = studentRepo.findByStudentId(user.getStudentId()).orElse(null);
+                if (student != null) {
+                    name = student.getName();
+                }
+            } else if (user.getRole().name().equals("ADMIN")) {
+                name = "Administrator";
+            }
+
+            return ResponseEntity
+                    .ok(new LoginResponse(token, user.getRole().name(), user.getUsername(), user.getStudentId(), name));
+        } catch (Exception e) {
+            System.err.println("Login error: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Login failed: " + e.getMessage());
+        }
     }
 }
