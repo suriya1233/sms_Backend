@@ -6,10 +6,8 @@ FROM maven:3.9-eclipse-temurin-17-alpine AS build
 # Set working directory
 WORKDIR /app
 
-# Copy Maven configuration files
+# Copy Maven configuration file
 COPY pom.xml .
-COPY .mvn .mvn
-COPY mvnw .
 
 # Download dependencies (cached layer)
 RUN mvn dependency:go-offline -B
@@ -49,7 +47,7 @@ ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseContainerSupport -XX:MaxRAMPercentage=7
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
-  CMD curl -f http://localhost:${PORT:-8081}/actuator/health || exit 1
+    CMD curl -f http://localhost:${PORT:-8081}/actuator/health || exit 1
 
 # Run the application
 # Use PORT environment variable if available, otherwise default to 8081
