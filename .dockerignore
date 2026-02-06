@@ -1,0 +1,49 @@
+# Build artifacts
+target/
+*.jar
+*.war
+*.ear
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+.settings/
+.classpath
+.project
+
+# Git
+.git/
+.gitignore
+.github/
+
+# Environment and config
+.env
+.env.local
+*.log
+
+# Node modules (if any)
+node_modules/
+package-lock.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation (optional, comment out if you want to include)
+README.md
+DEPLOYMENT.md
+FIX_500_ERROR_GUIDE.md
+
+# Batch files
+*.bat
+
+# Tests
+src/test/
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
