@@ -51,6 +51,7 @@ app.use(cors({
         callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
+    origin:['https://srs-frontend-a0za.onrender.com'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
